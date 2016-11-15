@@ -23,73 +23,81 @@ public class TALTest extends WebDriverTestBase {
 		
 		setupWebDriver(browserName, url, getProperty("GECKO_DRIVER_PATH"), 10);
 		
-		open(baseUrl);
+		while(true) {
 		
-		find("id=userName").clear();
-		type("id=userName", getProperty("USER_NAME"));
-		type("id=password", getProperty("USER_NAME"));
-
-		click("name=signin");
-		
-		if(isElementPresent("id=btnYes")) {
+			open(baseUrl);
 			
-			click("id=btnYes");
+			find("id=userName").clear();
+			type("id=userName", getProperty("USER_NAME"));
+			type("id=password", getProperty("USER_NAME"));
+
+			click("name=signin");
+			
+			if(isElementPresent("id=btnYes")) {
+				
+				click("id=btnYes");
+			}
+			
+			if(isElementPresent(By.id("btnCancel"))) {
+				
+				click("id=btnCancel");
+			} 
+			
+			click("id=lotNo");
+			type("id=lotNo", "5430");
+			type("id=endLotNo", "5439");
+			
+			click("id=lotSearch");
+
+			pause(textPause);
+
+
+			if(isEditable("id=quickBid" + i)) {
+				
+			       click("id=quickBid" + i);
+			 
+			       pause(bidPause);
+
+			       if(isElementPresent("id=btnConfirmOk")) {
+			           click("id=btnConfirmOk");
+			           
+			           pause(bidPause);
+			           if(isElementPresent("id=btnBidCancel") && isVisible("id=btnBidCancel")) {
+			               click("id=btnBidCancel");    
+			           }
+			       }
+			}
+
+			while (++i<=436)
+			{
+				
+			   System.out.println("Biddding for user Id " + getProperty("USER_NAME"));
+			   
+			   if(isEditable("id=quickBid" + i)) {
+			       
+			       click("id=quickBid" + i);
+			 
+			       pause(confirmPause);
+	
+			       if(isElementPresent("id=btnConfirmOk")) {
+			           click("id=btnConfirmOk");
+			           
+			           pause(bidPause);
+			           if(isElementPresent("id=btnBidCancel") && isVisible("id=btnBidCancel")) {
+			               click("id=btnBidCancel");    
+			           }
+			       }
+			   }
+			} 
+			
+			click("link=My Selections");
+
+			click("css=input.signin_out_btn");
+			
+			close();
 		}
-		
-		if(isElementPresent(By.id("btnCancel"))) {
-			
-			click("id=btnCancel");
-		} 
-		
-		click("id=lotNo");
-		type("id=lotNo", "5430");
-		type("id=endLotNo", "5439");
-		
-		click("id=lotSearch");
-
-		pause(textPause);
 
 
-		if(isEditable("id=quickBid" + i)) {
-			
-		       click("id=quickBid" + i);
-		 
-		       pause(bidPause);
-
-		       if(isElementPresent("id=btnConfirmOk")) {
-		           click("id=btnConfirmOk");
-		           
-		           pause(bidPause);
-		           if(isElementPresent("id=btnBidCancel") && isVisible("id=btnBidCancel")) {
-		               click("id=btnBidCancel");    
-		           }
-		       }
-		}
-
-		while (++i<=436)
-		{
-		   if(isEditable("id=quickBid" + i)) {
-		       
-		       click("id=quickBid" + i);
-		 
-		       pause(confirmPause);
-
-		       if(isElementPresent("id=btnConfirmOk")) {
-		           click("id=btnConfirmOk");
-		           
-		           pause(bidPause);
-		           if(isElementPresent("id=btnBidCancel") && isVisible("id=btnBidCancel")) {
-		               click("id=btnBidCancel");    
-		           }
-		       }
-		    }
-		} 
-
-		click("link=My Selections");
-
-		click("css=input.signin_out_btn");
-		
-		close();
 	}
 	
 	public void loadProperties(String propertiesFileName) {
