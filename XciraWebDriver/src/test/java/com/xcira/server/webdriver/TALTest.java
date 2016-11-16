@@ -2,17 +2,16 @@ package com.xcira.server.webdriver;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.util.Properties;
 
 import org.openqa.selenium.By;
 
-import com.xcira.server.webdriver.WebDriverTestBase;
-
 public class TALTest extends WebDriverTestBase {
 	
-	private long bidPause = 30000;
-    private long confirmPause = 4000;
-    private long textPause = 5000;
+	private long bidPause = 1000;
+    private long confirmPause = 1000;
+    private long textPause = 1000;
     
     private int i = 427;
     
@@ -23,10 +22,13 @@ public class TALTest extends WebDriverTestBase {
 		
 		setupWebDriver(browserName, url, getProperty("GECKO_DRIVER_PATH"), 10);
 		
-		while(true) {
+		open(baseUrl);
 		
-			open(baseUrl);
+		PrintWriter writer = new PrintWriter("bidder_" + getProperty("USER_NAME") + ".txt", "UTF-8");
+	    
+		while(!isDone()) {
 			
+			writer.println("logging in user");
 			find("id=userName").clear();
 			type("id=userName", getProperty("USER_NAME"));
 			type("id=password", getProperty("USER_NAME"));
@@ -71,7 +73,7 @@ public class TALTest extends WebDriverTestBase {
 			while (++i<=436)
 			{
 				
-			   System.out.println("Biddding for user Id " + getProperty("USER_NAME"));
+			   writer.println("Biddding for user Id " + getProperty("USER_NAME"));
 			   
 			   if(isEditable("id=quickBid" + i)) {
 			       
@@ -90,14 +92,25 @@ public class TALTest extends WebDriverTestBase {
 			   }
 			} 
 			
+			writer.println("logging out user");
+			
+			//throw a flush in every so often to get data out to the disk
+			writer.flush();
+			
 			click("link=My Selections");
 
 			click("css=input.signin_out_btn");
-			
-			close();
 		}
-
-
+		
+		writer.close();
+		
+		driver.close();
+	}
+	
+	public boolean isDone() {
+		
+		return false;
+		
 	}
 	
 	public void loadProperties(String propertiesFileName) {
