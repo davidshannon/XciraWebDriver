@@ -12,7 +12,7 @@ public class Report {
 	
 	public Report(String filename) {
 		
-		setFileName(filename);
+		this.setFileName(filename);
 	}
 	
 	public void putRecord(LineItem lineItem) {

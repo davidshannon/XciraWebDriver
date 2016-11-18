@@ -23,6 +23,7 @@ public class TALTest extends WebDriverTestBase {
 	
 	public void openReport() {
 		
+		System.out.println("filename = " + getProperty("OUTPUT_FILE"));
 		report = new Report(getProperty("OUTPUT_FILE"));
 	}
 	
@@ -32,7 +33,6 @@ public class TALTest extends WebDriverTestBase {
 		
 		open(baseUrl);
 		
-	    
 		while(!isDone()) {
 			
 			report.putRecord(new LineItem(true, "open browser", "TALTest"));
@@ -142,8 +142,6 @@ public class TALTest extends WebDriverTestBase {
 		
 		TALTest talTest = new TALTest();
 		
-		talTest.openReport();
-		
 		if(args.length != 0) {
 			
 			talTest.loadProperties(args[0]);
@@ -152,6 +150,8 @@ public class TALTest extends WebDriverTestBase {
 			System.out.println("Missing required argument: config.properties path");
 			System.exit(-1);
 		}
+		
+		talTest.openReport();
 				
 		talTest.runTest(talTest.getProperty("BROWSER_NAME"), talTest.getProperty("URL"));
 		
@@ -161,7 +161,5 @@ public class TALTest extends WebDriverTestBase {
 	private void closeReport() throws Exception {
 		
 		report.writeReport();
-		
 	}
-
 }
