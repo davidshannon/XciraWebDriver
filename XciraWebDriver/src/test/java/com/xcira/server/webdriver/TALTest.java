@@ -2,13 +2,16 @@ package com.xcira.server.webdriver;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.util.Properties;
 
 import org.openqa.selenium.By;
 
+import com.xcira.report.LineItem;
+import com.xcira.report.Report;
+
 public class TALTest extends WebDriverTestBase {
 	
+	private Report  report; 
 	private long bidPause = 1000;
     private long confirmPause = 1000;
     private long textPause = 1000;
@@ -18,17 +21,22 @@ public class TALTest extends WebDriverTestBase {
 	static private Properties prop = new Properties();
 	static private InputStream input = null;
 	
+	public void openReport() {
+		
+		report = new Report(getProperty("OUTPUT_FILE"));
+	}
+	
 	public void runTest(String browserName, String url) throws Exception {
 		
 		setupWebDriver(browserName, url, getProperty("GECKO_DRIVER_PATH"), 10);
 		
 		open(baseUrl);
 		
-		PrintWriter writer = new PrintWriter("bidder_" + getProperty("USER_NAME") + ".txt", "UTF-8");
 	    
 		while(!isDone()) {
 			
-			writer.println("logging in user");
+			report.putRecord(new LineItem(true, "open browser", "TALTest"));
+			
 			find("id=userName").clear();
 			type("id=userName", getProperty("USER_NAME"));
 			type("id=password", getProperty("USER_NAME"));
@@ -37,6 +45,7 @@ public class TALTest extends WebDriverTestBase {
 			
 			if(isElementPresent("id=btnYes")) {
 				
+				report.putRecord(new LineItem(true, "Yes button present", "TALTest"));
 				click("id=btnYes");
 			}
 			
@@ -73,7 +82,7 @@ public class TALTest extends WebDriverTestBase {
 			while (++i<=436)
 			{
 				
-			   writer.println("Biddding for user Id " + getProperty("USER_NAME"));
+			   report.putRecord(new LineItem(true, "Biddding for user Id " + getProperty("USER_NAME"), "TALTest"));
 			   
 			   if(isEditable("id=quickBid" + i)) {
 			       
@@ -86,23 +95,19 @@ public class TALTest extends WebDriverTestBase {
 			           
 			           pause(bidPause);
 			           if(isElementPresent("id=btnBidCancel") && isVisible("id=btnBidCancel")) {
+			        	   
 			               click("id=btnBidCancel");    
 			           }
 			       }
 			   }
 			} 
 			
-			writer.println("logging out user");
-			
-			//throw a flush in every so often to get data out to the disk
-			writer.flush();
+			report.putRecord(new LineItem(true, "logging out user", "TALTest"));
 			
 			click("link=My Selections");
 
 			click("css=input.signin_out_btn");
 		}
-		
-		writer.close();
 		
 		driver.close();
 	}
@@ -115,8 +120,6 @@ public class TALTest extends WebDriverTestBase {
 	
 	public void loadProperties(String propertiesFileName) {
 		
-
-
 		try {
 
 			input = new FileInputStream(propertiesFileName);
@@ -139,6 +142,8 @@ public class TALTest extends WebDriverTestBase {
 		
 		TALTest talTest = new TALTest();
 		
+		talTest.openReport();
+		
 		if(args.length != 0) {
 			
 			talTest.loadProperties(args[0]);
@@ -149,6 +154,14 @@ public class TALTest extends WebDriverTestBase {
 		}
 				
 		talTest.runTest(talTest.getProperty("BROWSER_NAME"), talTest.getProperty("URL"));
+		
+		talTest.closeReport();
+	}
+
+	private void closeReport() throws Exception {
+		
+		report.writeReport();
+		
 	}
 
 }
