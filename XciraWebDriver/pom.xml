@@ -27,5 +27,5 @@
             <id>repository</id>
             <url>http://build.nexcira.com:9000/repository</url>
         </repository>
-    </repositories>
+    </repositories> 
 </project>
