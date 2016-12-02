@@ -1,4 +1,4 @@
-package com.xcira.server.webdriver;
+package com.xcira.server.webdriver.testscases;
 
 
 import java.util.List;

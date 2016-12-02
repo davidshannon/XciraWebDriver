@@ -1,13 +1,10 @@
-package com.xcira.server.webdriver;
-
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.Properties;
+package com.xcira.server.webdriver.testscases;
 
 import org.openqa.selenium.By;
 
 import com.xcira.report.LineItem;
 import com.xcira.report.Report;
+import com.xcira.server.webdriver.WebDriverTestBase;
 
 public class TALTest extends WebDriverTestBase {
 	
@@ -17,9 +14,6 @@ public class TALTest extends WebDriverTestBase {
     private long textPause = 1000;
     
     private int i = 427;
-    
-	static private Properties prop = new Properties();
-	static private InputStream input = null;
 	
 	public void openReport() {
 		
@@ -29,7 +23,7 @@ public class TALTest extends WebDriverTestBase {
 	
 	public void runTest(String browserName, String url) throws Exception {
 		
-		setupWebDriver(browserName, url, getProperty("GECKO_DRIVER_PATH"), 10);
+		setupWebDriver(browserName, getProperty("BROWSER_BINARY_PATH") ,url, getProperty("GECKO_DRIVER_PATH"), getProperty(IMPLICITE_WAIT));
 		
 		open(baseUrl);
 		
@@ -118,26 +112,6 @@ public class TALTest extends WebDriverTestBase {
 		
 	}
 	
-	public void loadProperties(String propertiesFileName) {
-		
-		try {
-
-			input = new FileInputStream(propertiesFileName);
-			
-			prop.load(input);
-		} catch (Exception e) {
-			
-			System.out.println("unable to read properties.");
-			System.out.println(e.getMessage());
-			System.exit(-1);
-		}
-	}
-	
-	public String getProperty(String key) {
-		
-		return prop.getProperty(key);
-	}
-	
 	public static void main(String args[]) throws Exception {
 		
 		TALTest talTest = new TALTest();
@@ -145,6 +119,7 @@ public class TALTest extends WebDriverTestBase {
 		if(args.length != 0) {
 			
 			talTest.loadProperties(args[0]);
+			
 		} else {
 			
 			System.out.println("Missing required argument: config.properties path");
@@ -153,7 +128,7 @@ public class TALTest extends WebDriverTestBase {
 		
 		talTest.openReport();
 				
-		talTest.runTest(talTest.getProperty("BROWSER_NAME"), talTest.getProperty("URL"));
+		talTest.runTest(talTest.getProperty(BROWSER_NAME), talTest.getProperty(URL));
 		
 		talTest.closeReport();
 	}

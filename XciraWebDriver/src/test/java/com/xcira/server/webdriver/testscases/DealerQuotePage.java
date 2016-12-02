@@ -1,4 +1,4 @@
-package com.xcira.server.webdriver;
+package com.xcira.server.webdriver.testscases;
 
 import static org.junit.Assert.fail;
 
@@ -10,6 +10,8 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
+
+import com.xcira.server.webdriver.WebDriverTestBase;
 
 public class DealerQuotePage extends WebDriverTestBase {
 	

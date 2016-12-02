@@ -2,6 +2,7 @@ package com.xcira.server.webdriver;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -13,20 +14,29 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.safari.SafariDriver;
 
-public class WebDriverTestBase {
+public class WebDriverTestBase extends TestBase {
 	
-	static protected Actions actions;
-	static protected WebDriver driver;
-	static protected String baseUrl;
-	static protected boolean acceptNextAlert = true;
-	static protected StringBuffer verificationErrors = new StringBuffer();
-	static protected List<WebElement> pageOptionButtons;
+	static final protected String BROWSER_PATH = "BROWSER_PATH";
+	static final protected String BROWSER_NAME = "BROWSER_NAME";
+	static final protected String GECKO_PATH = "GECKO_PATH";
+	static final protected String IMPLICITE_WAIT = "IMPLICITE_WAIT";
+	static final protected String URL = "URL";
+	
+	protected Actions actions;
+	protected WebDriver driver;
+	protected String baseUrl;
+	protected boolean acceptNextAlert = true;
+	protected StringBuffer verificationErrors = new StringBuffer();
+	protected List<WebElement> pageOptionButtons;
 
 	protected WebElement verifyAttributeValues(By by, Map<String,String> attributeValues) {
 		
@@ -185,7 +195,7 @@ public class WebDriverTestBase {
 		driver.close();
 	}
 	
-	protected void setupWebDriver(String browserName, String url, String geckoDriverPath, int implicitlyWait) {
+	protected void setupWebDriver(String browserName, String binaryPath, String url, String geckoDriverPath, String implicitlyWait) {
 		
 		if(browserName.equalsIgnoreCase("ie")) {
 			
@@ -193,6 +203,10 @@ public class WebDriverTestBase {
 			
 		} else if(browserName.equalsIgnoreCase("chrome")) {
 			
+			if(binaryPath != null) {
+
+				System.setProperty("webdriver.chrome.driver", binaryPath);
+			}
 			driver = new ChromeDriver();
 			
 		} else if (browserName.equalsIgnoreCase("safari")) {
@@ -203,12 +217,23 @@ public class WebDriverTestBase {
 			
 			if(geckoDriverPath != null) {
 				
+				ProfilesIni profilesIni = new ProfilesIni();	
+				FirefoxProfile fp = profilesIni.getProfile("selenium");
 				DesiredCapabilities desiredCapability = DesiredCapabilities.firefox();
-				
+			    
 				System.out.println("geckopath set to (" + geckoDriverPath + ")");
 				System.setProperty("webdriver.gecko.driver", geckoDriverPath);
+			    
+			    desiredCapability.setCapability(FirefoxDriver.PROFILE, fp);
 				
-				driver = new FirefoxDriver(desiredCapability);
+			    if(binaryPath != null) {
+			    	
+			    	driver = new FirefoxDriver(new FirefoxBinary(new File(binaryPath)), fp, desiredCapability);
+			    	
+			    } else {
+			    
+			    	driver = new FirefoxDriver(desiredCapability);
+			    }
 				
 			} else {
 				
@@ -220,7 +245,16 @@ public class WebDriverTestBase {
 		
 		baseUrl = url;
 		
-		driver.manage().timeouts().implicitlyWait(implicitlyWait, TimeUnit.SECONDS);
+		if(implicitlyWait != null) {
+		
+			driver.manage().timeouts().implicitlyWait(Integer.parseInt(implicitlyWait), TimeUnit.SECONDS);
+			
+		} else {
+			
+			driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		}
+		
+		
 		
 		actions = new Actions(driver);
 	}

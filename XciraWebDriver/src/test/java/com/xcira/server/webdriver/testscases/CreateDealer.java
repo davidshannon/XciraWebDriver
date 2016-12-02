@@ -1,27 +1,23 @@
-package com.xcira.server.webdriver;
+package com.xcira.server.webdriver.testscases;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 
+import com.xcira.server.webdriver.WebDriverTestBase;
 import com.xcira.utils.CollectionUtil;
 
 
@@ -128,10 +124,10 @@ public class CreateDealer extends WebDriverTestBase {
 	@BeforeClass
 	public static void setUp() throws Exception {
 
-		driver = new FirefoxDriver();
-		baseUrl="http://ng.xcira.com";
-		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
-		actions = new Actions(driver);
+		//driver = new FirefoxDriver();
+		//baseUrl="http://ng.xcira.com";
+		//driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+		//actions = new Actions(driver);
 	}
 
 	@Test
@@ -324,16 +320,6 @@ public class CreateDealer extends WebDriverTestBase {
 		assertEquals("The quote is already paid", driver.findElement(By.cssSelector("button.payment")).getAttribute("title"));
 	}
 
-	@AfterClass
-	public static void tearDown() throws Exception {
-		
-		driver.quit();
-		
-		String verificationErrorString = verificationErrors.toString();
-		if (!"".equals(verificationErrorString)) {
-			fail(verificationErrorString);
-		}
-	}
 	
 	private String getQuoteLineFieldValue(WebElement quoteLine, int field) throws Exception {
 		
