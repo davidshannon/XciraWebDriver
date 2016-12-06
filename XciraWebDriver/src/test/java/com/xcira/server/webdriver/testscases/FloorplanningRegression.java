@@ -45,7 +45,7 @@ public class FloorplanningRegression extends FloorPlanningBase {
 		dealerName = "WebDriver_" + emailPrefix;
 		
 		loginFloorplanning("ro@ro.com", "ro");
-		driver.findElement(By.xpath("//li[@id='widgets/display/menu/MenuItem_0']/div")).click();
+		getMenuItem("Dealers").click();
 		
 		pause(10000);
 		
@@ -124,6 +124,8 @@ public class FloorplanningRegression extends FloorPlanningBase {
 		find("css=button.alertButton").click();
 		
 		pause(1000);
+		
+		log(true, "Test Create Dealer");
 	}
 	
 	public void testDealerDetails() throws Exception {
@@ -137,6 +139,8 @@ public class FloorplanningRegression extends FloorPlanningBase {
 		assertEquals("invalid page option button count: ", 6, pageOptionButtons.size());
 		
 		clickPageOptionButton("Print");
+		
+		log(true, "Test Create Dealer");
 
 	}
 	
@@ -161,7 +165,7 @@ public class FloorplanningRegression extends FloorPlanningBase {
 		vinLookupResult.click();
 		
 		assertEquals("Mercedes-Benz", driver.findElement(By.name("fields.make")).getAttribute("value"));
-		assertEquals("C Class", driver.findElement(By.name("fields.model")).getAttribute("value"));
+		assertEquals("C-Class", driver.findElement(By.name("fields.model")).getAttribute("value"));
 		assertEquals("2012", driver.findElement(By.name("fields.year")).getAttribute("value"));
 		
 	}
@@ -183,7 +187,7 @@ public class FloorplanningRegression extends FloorPlanningBase {
 		WebElement saveQuoteButton = driver.findElement(By.cssSelector("button.compute"));
 		WebElement quoteLine = driver.findElement(By.cssSelector("div.quoteLine"));		
 		
-		validateVehicalQuotePage(quoteLine, "92", "92", 0);
+		validateVehicalQuotePage(quoteLine, "91", "91", 0);
 		
 		SimpleDateFormat formalDateFormat = new SimpleDateFormat("MMM dd, yyyy");
 				
@@ -222,15 +226,23 @@ public class FloorplanningRegression extends FloorPlanningBase {
 	
 	public void runAllTests() throws Exception {
 		
-		setupWebDriver(getProperty(BROWSER_NAME), getProperty(BROWSER_PATH), getProperty(URL), getProperty(GECKO_PATH), getProperty(IMPLICITE_WAIT));
+		openReport("FLoorplanningRegression");
 		
-		testCreateDealer();
-		//testDealerDetails();
-		//testVinLookup();
-		//testAddVehicle();
-		//testGenerateQuotePage();
+		try {
+			
+			setupWebDriver(getProperty(BROWSER_NAME), getProperty(BROWSER_PATH), getProperty(URL), getProperty(GECKO_PATH), getProperty(IMPLICITE_WAIT));
+			
+			testCreateDealer();
+			/*testDealerDetails();
+			testVinLookup();
+			testAddVehicle();
+			testGenerateQuotePage();*/
 		
-		close();
+		} catch (Exception e) {
+			
+			log(false, "Exception: " + e.getMessage());
+		}
+
 		
 	}
 	

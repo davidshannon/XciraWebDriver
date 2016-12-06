@@ -7,20 +7,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.safari.SafariDriver;
 
 public class WebDriverTestBase extends TestBase {
@@ -29,6 +28,7 @@ public class WebDriverTestBase extends TestBase {
 	static final protected String BROWSER_NAME = "BROWSER_NAME";
 	static final protected String GECKO_PATH = "GECKO_PATH";
 	static final protected String IMPLICITE_WAIT = "IMPLICITE_WAIT";
+	static final protected String SCREENSHOT_DIR = "SCREENSHOT_DIR";
 	static final protected String URL = "URL";
 	
 	protected Actions actions;
@@ -148,6 +148,18 @@ public class WebDriverTestBase extends TestBase {
 		Thread.sleep(pauseTime);
 	}
 	
+	protected void writeScreenshot(String path) throws Exception {
+
+		FileUtils.copyFile(getScreenshot(), new File(path));
+	}
+	
+	private File getScreenshot() throws Exception {
+		
+		File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+		
+		return scrFile;
+	}
+	
 	protected WebElement find(String path) throws Exception {
 		
 		By by;
@@ -215,7 +227,7 @@ public class WebDriverTestBase extends TestBase {
 			
 		} else {
 			
-			if(geckoDriverPath != null) {
+			/*if(geckoDriverPath != null) {
 				
 				ProfilesIni profilesIni = new ProfilesIni();	
 				FirefoxProfile fp = profilesIni.getProfile("selenium");
@@ -235,10 +247,10 @@ public class WebDriverTestBase extends TestBase {
 			    	driver = new FirefoxDriver(desiredCapability);
 			    }
 				
-			} else {
+			} else {*/
 				
 				driver = new FirefoxDriver();
-			}
+			//}
 
 			
 		}

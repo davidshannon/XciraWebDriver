@@ -13,6 +13,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
+import com.xcira.sdk.exception.XciraException;
 import com.xcira.server.webdriver.WebDriverTestBase;
 import com.xcira.utils.CollectionUtil;
 
@@ -51,7 +52,7 @@ public class FloorPlanningBase extends WebDriverTestBase {
 					"Unexpected Days Interest label", "Days Interest"
 				},
 				{
-					"Unexpected Days Interest value", "92"
+					"Unexpected Days Interest value", "91"
 				}
 			},
 			{
@@ -59,7 +60,7 @@ public class FloorPlanningBase extends WebDriverTestBase {
 					"Unexpected Days on Account label", "Days On Account"
 				},
 				{
-					"Unexpected Days on Account value", "92"
+					"Unexpected Days on Account value", "91"
 				}
 			},
 			{
@@ -108,6 +109,33 @@ public class FloorPlanningBase extends WebDriverTestBase {
 	protected String getQuoteLineFieldValue(WebElement quoteLine, int field) throws Exception {
 		
 		return quoteLine.findElements(By.tagName("div")).get(field).getText();
+	}
+	
+	protected WebElement getMenuItem(String menuName) throws Exception {
+	
+		String xpath = "//li[@id='widgets/display/menu/MenuItem_%xx%']/div";
+		
+		switch(menuName) {
+		
+			case "Dealers" : 	xpath = xpath.replace("%xx%", "0");
+							 	break;
+							 
+			case "Vehicles" : 	xpath = xpath.replace("%xx%", "1");
+							  	break;
+							  
+			case "Reports" : 	xpath = xpath.replace("%xx%", "2");
+							 	break;
+							 
+			case "System" : 	xpath = xpath.replace("%xx%", "3");
+			 				 	break;
+			 			
+			case "Help" : 		xpath = xpath.replace("%xx%", "4");
+			 					break;
+			 					
+			default : throw new XciraException("Invalid Menu Item Selected");
+		}
+		
+		return driver.findElement(By.xpath(xpath));
 	}
 	
 	protected void addVehicle(String vin, String make, String model, String year, String color, String mileage, String amount, int loanDateOffset) throws Exception {
@@ -192,7 +220,7 @@ public class FloorPlanningBase extends WebDriverTestBase {
 		
 		String foundActiveApprovedElements = "";
 		for (WebElement element : requiredElements) {
-
+;
 			for (String fieldName : requiredActiveApprovedFields.split(" ")) {
 
 				if (element.getAttribute("name").equals(fieldName)) {
@@ -277,7 +305,7 @@ public class FloorPlanningBase extends WebDriverTestBase {
 		
 		SimpleDateFormat fromFormat = new SimpleDateFormat("MM/dd/yyyy");
 		fromFormat.setLenient(false);
-		SimpleDateFormat toFormat = new SimpleDateFormat("MMM dd, yyyy");
+		SimpleDateFormat toFormat = new SimpleDateFormat("MMM d, yyyy");
 		toFormat.setLenient(false);
 		
 		return toFormat.format(fromFormat.parse(dateString));

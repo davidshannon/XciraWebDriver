@@ -2,24 +2,17 @@ package com.xcira.server.webdriver.testscases;
 
 import org.openqa.selenium.By;
 
-import com.xcira.report.LineItem;
-import com.xcira.report.Report;
 import com.xcira.server.webdriver.WebDriverTestBase;
 
 public class TALTest extends WebDriverTestBase {
 	
-	private Report  report; 
 	private long bidPause = 1000;
     private long confirmPause = 1000;
     private long textPause = 1000;
     
     private int i = 427;
 	
-	public void openReport() {
-		
-		System.out.println("filename = " + getProperty("OUTPUT_FILE"));
-		report = new Report(getProperty("OUTPUT_FILE"));
-	}
+
 	
 	public void runTest(String browserName, String url) throws Exception {
 		
@@ -29,7 +22,7 @@ public class TALTest extends WebDriverTestBase {
 		
 		while(!isDone()) {
 			
-			report.putRecord(new LineItem(true, "open browser", "TALTest"));
+			log(true, "open browser");
 			
 			find("id=userName").clear();
 			type("id=userName", getProperty("USER_NAME"));
@@ -39,7 +32,7 @@ public class TALTest extends WebDriverTestBase {
 			
 			if(isElementPresent("id=btnYes")) {
 				
-				report.putRecord(new LineItem(true, "Yes button present", "TALTest"));
+				log(true, "Yes button present");
 				click("id=btnYes");
 			}
 			
@@ -76,7 +69,7 @@ public class TALTest extends WebDriverTestBase {
 			while (++i<=436)
 			{
 				
-			   report.putRecord(new LineItem(true, "Biddding for user Id " + getProperty("USER_NAME"), "TALTest"));
+			   log(true, "Biddding for user Id " + getProperty("USER_NAME"));
 			   
 			   if(isEditable("id=quickBid" + i)) {
 			       
@@ -96,7 +89,7 @@ public class TALTest extends WebDriverTestBase {
 			   }
 			} 
 			
-			report.putRecord(new LineItem(true, "logging out user", "TALTest"));
+			log(true, "logging out user");
 			
 			click("link=My Selections");
 
@@ -126,7 +119,7 @@ public class TALTest extends WebDriverTestBase {
 			System.exit(-1);
 		}
 		
-		talTest.openReport();
+		talTest.openReport("TALTest");
 				
 		talTest.runTest(talTest.getProperty(BROWSER_NAME), talTest.getProperty(URL));
 		
@@ -135,6 +128,6 @@ public class TALTest extends WebDriverTestBase {
 
 	private void closeReport() throws Exception {
 		
-		report.writeReport();
+		writeReport();
 	}
 }
