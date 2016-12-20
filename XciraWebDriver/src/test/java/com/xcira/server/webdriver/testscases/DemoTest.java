@@ -29,12 +29,19 @@ public class DemoTest extends FloorPlanningBase {
 				
 				loginFloorplanning("ro@ro.com", "ro");
 				
+				pause(10000);
 				getMenuItem("Dealers").click();
-				
-				find("link=Dealers List");
+				log(true, "dealers");
+
+				pause(10000);
 				getMenuItem("Vehicles").click();
+				log(true, "vehicles");
 				
-				log(true, "clicked Vehicles Menu");
+				pause(10000);
+				getMenuItem("Dealers").click();
+				log(true, "dealers");
+				
+				/*log(true, "clicked Vehicles Menu");
 				getMenuItem("Reports").click();
 				log(true, "clicked Reports Menu");
 				getMenuItem("System").click();
@@ -42,12 +49,12 @@ public class DemoTest extends FloorPlanningBase {
 				getMenuItem("Help").click();
 				log(true, "clicked Help Menu");
 				
-				writeScreenshot(getProperty(SCREENSHOT_DIR) + "/" + "testMenuItem.png");
+				writeScreenshot(getProperty(SCREENSHOT_DIR) + "/" + "testMenuItem.png");*/
 				close();
 				
 			} catch (Exception e) {
 				
-				log(false, "testMenuItems");
+				log(false, "testMenuItems: " + e.getMessage());
 			
 				close();
 				throw e;

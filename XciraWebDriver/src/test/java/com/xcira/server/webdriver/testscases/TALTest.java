@@ -16,11 +16,39 @@ public class TALTest extends WebDriverTestBase {
 	
 	public void runTest(String browserName, String url) throws Exception {
 		
-		setupWebDriver(browserName, getProperty("BROWSER_BINARY_PATH") ,url, getProperty("GECKO_DRIVER_PATH"), getProperty(IMPLICITE_WAIT));
+		setupWebDriver(browserName, getProperty(BROWSER_PATH) ,url, getProperty(GECKO_PATH), getProperty(IMPLICITE_WAIT));
 		
 		open(baseUrl);
 		
-		while(!isDone()) {
+		find("id=userName").clear();
+		type("id=userName", getProperty("USER_NAME"));
+		type("id=password", getProperty("USER_NAME"));
+
+		click("name=signin");
+		
+		try {
+		
+			System.out.println("looking for btnNo");
+			driver.findElement(By.id("btnNo"));
+			
+		} catch (Exception e) {
+			
+			System.out.println("didn't find btnNo");
+		}
+		
+		
+		pause(1000);
+
+		log(true, "logging out user");
+		
+		click("link=My Selections");
+		click("css=input.signin_out_btn");
+		
+		
+		driver.close();
+		
+
+		/*while(!isDone()) {
 			
 			log(true, "open browser");
 			
@@ -96,7 +124,7 @@ public class TALTest extends WebDriverTestBase {
 			click("css=input.signin_out_btn");
 		}
 		
-		driver.close();
+		driver.close();*/
 	}
 	
 	public boolean isDone() {

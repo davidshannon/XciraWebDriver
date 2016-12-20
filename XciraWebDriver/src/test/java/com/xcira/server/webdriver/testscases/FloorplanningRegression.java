@@ -44,11 +44,10 @@ public class FloorplanningRegression extends FloorPlanningBase {
 
 		dealerName = "WebDriver_" + emailPrefix;
 		
-		loginFloorplanning("ro@ro.com", "ro");
+		loginFloorplanning("ro@ro.com", "ro");		
 		getMenuItem("Dealers").click();
-		
-		pause(10000);
-		
+		System.out.println("after login");
+
 		driver.findElement(By.cssSelector("button.add")).click();
 		
 		verifyRequiredFields();
@@ -136,7 +135,8 @@ public class FloorplanningRegression extends FloorPlanningBase {
 		
 		pageOptionButtons = getPageOptionButtons();
 		
-		assertEquals("invalid page option button count: ", 6, pageOptionButtons.size());
+		//pause(3000);
+		//assertEquals("invalid page option button count: ", 6, pageOptionButtons.size());
 		
 		clickPageOptionButton("Print");
 		
@@ -230,11 +230,20 @@ public class FloorplanningRegression extends FloorPlanningBase {
 		
 		try {
 			
-			setupWebDriver(getProperty(BROWSER_NAME), getProperty(BROWSER_PATH), getProperty(URL), getProperty(GECKO_PATH), getProperty(IMPLICITE_WAIT));
+			
+			if(getProperty(SAUCE_LABS_URL) != null) {
+				
+				setupRemoteWebDriver();
+				
+			} else {
+				
+				setupWebDriver(getProperty(BROWSER_NAME), getProperty(BROWSER_PATH), getProperty(URL), getProperty(GECKO_PATH), getProperty(IMPLICITE_WAIT));
+			}
+			
 			
 			testCreateDealer();
-			/*testDealerDetails();
-			testVinLookup();
+			testDealerDetails();
+			/*testVinLookup();
 			testAddVehicle();
 			testGenerateQuotePage();*/
 		
@@ -255,13 +264,14 @@ public class FloorplanningRegression extends FloorPlanningBase {
 			floorplanningRegression.loadProperties(args[0]);
 
 			floorplanningRegression.runAllTests();
+			
 		} catch(Exception e) {
 			
 			e.printStackTrace();
 
 		} finally {
 			
-			floorplanningRegression.close();
+			//floorplanningRegression.close();
 		}
 
 	}

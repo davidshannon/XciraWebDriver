@@ -3,6 +3,7 @@ package com.xcira.server.webdriver;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -17,9 +18,14 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
 
 public class WebDriverTestBase extends TestBase {
@@ -29,7 +35,10 @@ public class WebDriverTestBase extends TestBase {
 	static final protected String GECKO_PATH = "GECKO_PATH";
 	static final protected String IMPLICITE_WAIT = "IMPLICITE_WAIT";
 	static final protected String SCREENSHOT_DIR = "SCREENSHOT_DIR";
+	static final protected String PLATFORM= "PLATFORM";
+	static final protected String VERSION="VERSION";
 	static final protected String URL = "URL";
+	static final protected String SAUCE_LABS_URL = "SAUCE_LABS_URL";
 	
 	protected Actions actions;
 	protected WebDriver driver;
@@ -200,11 +209,60 @@ public class WebDriverTestBase extends TestBase {
 	protected void open(String url) {
 		
 		driver.get(url);
+		
 	}
 	
 	protected void close() {
 		
 		driver.close();
+	}
+	
+	protected void clickAndWait(WebElement webElement) throws Exception {
+		
+		webElement.click();
+		
+		waitForPageToLoad();
+	}
+	
+	protected void waitForPageToLoad() throws Exception {
+	
+	    //new WebDriverWait(driver, 30).until((ExpectedCondition<Boolean>) wd ->
+	    //        ((JavascriptExecutor) wd).executeScript("return document.readyState").equals("complete"));
+		
+		//WebDriverWait wait = new WebDriverWait(driver, 10);
+		//wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("gridContainer")));
+		
+		Thread.sleep(2000);
+	}
+	
+	protected void setupRemoteWebDriver() throws Exception {
+		
+		String browser = getProperty(BROWSER_NAME).toLowerCase();
+		
+		DesiredCapabilities capabilities = null;
+		
+		switch (browser) {
+		
+			case "ie" :  	 capabilities = DesiredCapabilities.internetExplorer();
+					  		 break;
+					  
+			case "crhome" :  capabilities = DesiredCapabilities.chrome();
+							 break;
+							 
+			case "safari" :  capabilities = DesiredCapabilities.safari();
+							 break;
+							 
+			default : 		 capabilities = DesiredCapabilities.firefox();
+							 System.out.println("choosing firefox");
+							 break;
+		}
+		
+		capabilities.setCapability("platform", getProperty(PLATFORM));
+		capabilities.setCapability("version",  getProperty(VERSION));
+	 
+	    driver = new RemoteWebDriver(new URL(getProperty(SAUCE_LABS_URL)), capabilities);
+	    
+	    baseUrl = getProperty(URL);
 	}
 	
 	protected void setupWebDriver(String browserName, String binaryPath, String url, String geckoDriverPath, String implicitlyWait) {
@@ -219,6 +277,8 @@ public class WebDriverTestBase extends TestBase {
 
 				System.setProperty("webdriver.chrome.driver", binaryPath);
 			}
+			
+			System.setProperty("webdriver.chrome.driver", geckoDriverPath);
 			driver = new ChromeDriver();
 			
 		} else if (browserName.equalsIgnoreCase("safari")) {
@@ -227,7 +287,7 @@ public class WebDriverTestBase extends TestBase {
 			
 		} else {
 			
-			/*if(geckoDriverPath != null) {
+			if(geckoDriverPath != null) {
 				
 				ProfilesIni profilesIni = new ProfilesIni();	
 				FirefoxProfile fp = profilesIni.getProfile("selenium");
@@ -247,10 +307,10 @@ public class WebDriverTestBase extends TestBase {
 			    	driver = new FirefoxDriver(desiredCapability);
 			    }
 				
-			} else {*/
+			} else {
 				
 				driver = new FirefoxDriver();
-			//}
+			}
 
 			
 		}
@@ -263,7 +323,7 @@ public class WebDriverTestBase extends TestBase {
 			
 		} else {
 			
-			driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+			driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 		}
 		
 		

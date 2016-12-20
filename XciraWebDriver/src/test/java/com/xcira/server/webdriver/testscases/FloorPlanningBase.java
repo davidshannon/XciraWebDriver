@@ -243,12 +243,13 @@ public class FloorPlanningBase extends WebDriverTestBase {
 		find("name=password").sendKeys(password);
 		find("css=button.signInButton").click();
 		
-		pause(100);
+		waitForPageToLoad();
 	}
 	
 	protected void goToDealerDetailPage(String dealerName) throws Exception {
 		
-		actions.click(driver.findElement(By.xpath("//div[contains(text(),'Dealers')]"))).perform();
+		clickAndWait(getMenuItem("Dealers"));
+		
 	    actions.click(driver.findElement(By.cssSelector("span.dgrid-last.dgrid-page-link"))).perform();
 	    
 	    if(!isElementPresent(By.xpath("//td[contains(text(),'" + dealerName + "')]/preceding-sibling::td"))) {
