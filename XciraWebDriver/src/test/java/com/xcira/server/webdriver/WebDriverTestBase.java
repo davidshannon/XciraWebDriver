@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -11,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
@@ -212,9 +214,28 @@ public class WebDriverTestBase extends TestBase {
 		
 	}
 	
+	protected void openLinkNewTab(String linkText) {
+		
+		System.out.println(linkText);
+		String selectLinkOpeninNewTab = Keys.chord(Keys.CONTROL,Keys.RETURN); 
+		driver.findElement(By.linkText(linkText)).sendKeys(selectLinkOpeninNewTab);
+	}
+	
 	protected void close() {
 		
 		driver.close();
+	}
+	
+	protected void closeAll() {
+		
+		ArrayList<String> handles = new ArrayList<String> (driver.getWindowHandles());
+		
+		for(String handle : handles) {
+		
+			driver.switchTo().window(handle);
+			driver.close();
+		}
+		
 	}
 	
 	protected void clickAndWait(WebElement webElement) throws Exception {
@@ -253,7 +274,6 @@ public class WebDriverTestBase extends TestBase {
 							 break;
 							 
 			default : 		 capabilities = DesiredCapabilities.firefox();
-							 System.out.println("choosing firefox");
 							 break;
 		}
 		

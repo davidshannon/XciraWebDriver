@@ -16,7 +16,15 @@ public class TALTest extends WebDriverTestBase {
 	
 	public void runTest(String browserName, String url) throws Exception {
 		
-		setupWebDriver(browserName, getProperty(BROWSER_PATH) ,url, getProperty(GECKO_PATH), getProperty(IMPLICITE_WAIT));
+		if(getProperty(SAUCE_LABS_URL) != null) {
+			
+			setupRemoteWebDriver();
+			
+		} else {
+		
+			setupWebDriver(browserName, getProperty(BROWSER_PATH) ,url, getProperty(GECKO_PATH), getProperty(IMPLICITE_WAIT));
+		}
+		
 		
 		open(baseUrl);
 		

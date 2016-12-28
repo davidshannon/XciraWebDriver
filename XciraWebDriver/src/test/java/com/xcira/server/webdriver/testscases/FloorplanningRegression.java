@@ -141,7 +141,6 @@ public class FloorplanningRegression extends FloorPlanningBase {
 		clickPageOptionButton("Print");
 		
 		log(true, "Test Create Dealer");
-
 	}
 	
 	public void testVinLookup() throws Exception {
