@@ -1,12 +1,9 @@
 package com.xcira.server.webdriver;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
@@ -48,34 +45,6 @@ public class WebDriverTestBase extends TestBase {
 	protected boolean acceptNextAlert = true;
 	protected StringBuffer verificationErrors = new StringBuffer();
 	protected List<WebElement> pageOptionButtons;
-
-	protected WebElement verifyAttributeValues(By by, Map<String,String> attributeValues) {
-		
-		WebElement element = driver.findElement(by);
-		
-		for(String key : attributeValues.keySet()) {
-		
-			assertEquals(attributeValues.get(key), element.findElement(By.name("creditLimit")).getAttribute(key));
-		}
-		
-		return element.findElement(By.name("creditLimit"));
-	}
-	
-	protected List<WebElement> getPageOptionButtons() {
-		
-		return driver.findElement(By.cssSelector("div.pageOptions")).findElements(By.tagName("button"));
-	}
-	
-	protected void clickPageOptionButton(String buttonText) {
-		
-		for(WebElement button : pageOptionButtons) {
-			
-			if(button.getText().equals(buttonText)) {
-			
-				actions.click(button).perform();
-			}
-		}
-	}
 
 	protected boolean isAlertPresent() {
 

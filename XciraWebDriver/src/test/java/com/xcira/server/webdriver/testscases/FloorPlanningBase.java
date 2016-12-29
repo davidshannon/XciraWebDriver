@@ -81,6 +81,34 @@ public class FloorPlanningBase extends WebDriverTestBase {
 			}
 	};
 
+	protected WebElement verifyAttributeValues(By by, Map<String,String> attributeValues) {
+		
+		WebElement element = driver.findElement(by);
+		
+		for(String key : attributeValues.keySet()) {
+		
+			assertEquals(attributeValues.get(key), element.findElement(By.name("creditLimit")).getAttribute(key));
+		}
+		
+		return element.findElement(By.name("creditLimit"));
+	}
+	
+	protected List<WebElement> getPageOptionButtons() {
+		
+		return driver.findElement(By.cssSelector("div.pageOptions")).findElements(By.tagName("button"));
+	}
+	
+	protected void clickPageOptionButton(String buttonText) {
+		
+		for(WebElement button : pageOptionButtons) {
+			
+			if(button.getText().equals(buttonText)) {
+			
+				actions.click(button).perform();
+			}
+		}
+	}
+	
 	protected Map<String,By> loadLocators() throws Exception {
 		
 		Map <String, By> locationMap = CollectionUtil.createMap();
