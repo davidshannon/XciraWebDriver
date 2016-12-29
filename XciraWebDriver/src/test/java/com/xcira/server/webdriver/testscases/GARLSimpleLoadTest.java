@@ -6,10 +6,11 @@ import com.xcira.server.webdriver.WebDriverTestBase;
 
 public class GARLSimpleLoadTest extends WebDriverTestBase {
 	
+	private int numTabs = 0;
 	
 	public void runTest(String browserName, String url) throws Exception {
 		
-		String linkText = "#X:GARL CO LOT X";
+		String linkText = getProperty("LINKTEXT_TEMPLATE");
 		
 		int numBidders = Integer.parseInt(getProperty("NUMBIDDERS"));
 		
@@ -46,13 +47,13 @@ public class GARLSimpleLoadTest extends WebDriverTestBase {
 				
 				Thread.sleep(1000);
 				
-				click("id=viewList10000");
+				click("id=viewList" + getProperty("EVENTID"));
 				
 				Thread.sleep(10000);
 				
-				for(int i=1; i<=5; i++) {
+				for(int i=1; i<= getNumTabs(); i++) {
 					
-					openLinkNewTab(linkText.replaceAll("X", Integer.toString(i)));
+					openLinkNewTab(linkText.replaceAll("%X%", Integer.toString(i)));
 				}
 				
 				Thread.sleep(5000);
@@ -65,7 +66,7 @@ public class GARLSimpleLoadTest extends WebDriverTestBase {
 					System.exit(-1);
 				}
 				
-				for(int i = 1; i <= 5; i++) {
+				for(int i = 1; i <= getNumTabs(); i++) {
 					
 					driver.switchTo().window(handles.get(i));
 		
@@ -88,13 +89,13 @@ public class GARLSimpleLoadTest extends WebDriverTestBase {
 				Thread.sleep(1000);
 				
 				click("id=confirmOK");
+			
 			} catch (Exception e) {
 				
 				continue;
 			}
 			
 			driver.quit();
-			
 		}
 	}
 	
@@ -112,6 +113,18 @@ public class GARLSimpleLoadTest extends WebDriverTestBase {
 			
 			garlTest.loadProperties(args[0]);
 			
+			try {
+				
+				garlTest.setNumTabs(Integer.parseInt(garlTest.getProperty("NUMTABS")));
+			} catch (NumberFormatException nfe) {
+				
+				System.out.println("Error reading NUMTABS property.");
+				System.out.println(nfe.getLocalizedMessage());
+				
+				System.exit(-1);
+			}
+			
+			
 		} else {
 			
 			System.out.println("Missing required argument: config.properties path");
@@ -128,6 +141,14 @@ public class GARLSimpleLoadTest extends WebDriverTestBase {
 	private void closeReport() throws Exception {
 		
 		writeReport();
+	}
+
+	public int getNumTabs() {
+		return numTabs;
+	}
+
+	public void setNumTabs(int numTabs) {
+		this.numTabs = numTabs;
 	}
 
 }

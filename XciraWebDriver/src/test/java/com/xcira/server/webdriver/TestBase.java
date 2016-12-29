@@ -17,17 +17,28 @@ public class TestBase {
 		
 		this.testcaseName = testcaseName;
 		
-		report = new Report(getProperty("OUTPUT_FILE"));
+		if(getProperty("OUTPUT_FILE") != null) {
+		
+			report = new Report(getProperty("OUTPUT_FILE"));
+		}
 	}
 	
 	protected void log(boolean passed, String stepName) {
 		
-		report.putRecord(new LineItem(passed, stepName, testcaseName));
+		if(report != null) {
+		
+			report.putRecord(new LineItem(passed, stepName, testcaseName));
+		}
+		
 	}
 	
 	protected void writeReport() throws Exception{
 	
-		report.writeReport();
+		if(report != null) {
+		
+			report.writeReport();
+		}
+		
 	}
 	
 	protected void loadProperties(String propertiesFileName) throws Exception {
