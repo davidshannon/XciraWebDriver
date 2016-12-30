@@ -56,18 +56,28 @@ public class GARLSimpleLoadTest extends WebDriverTestBase {
 					openLinkNewTab(linkText.replaceAll("%X%", Integer.toString(i)));
 				}
 				
-				Thread.sleep(5000);
+				Thread.sleep(10000);
+				
+				String oldTab = driver.getWindowHandle();
 				
 				ArrayList<String> handles = new ArrayList<String> (driver.getWindowHandles());
 				
-				if(handles.size() < 6) {
+				handles.remove(oldTab);
+				
+				if(handles.size() < getNumTabs()) {
 					
 					System.out.println("Unable to continue incorrect number of tabs open");
 					System.exit(-1);
 				}
 				
-				for(int i = 1; i <= getNumTabs(); i++) {
+				for(int i = 0; i < getNumTabs(); i++) {
 					
+					//This is where chrome fails.   For some reason switching to the tab gives you an element not clickable
+					//at point (563, 146) error when you try to do the switch.   Firefox doesn't run into this issue.  Not
+					//Sure what the deal is with this on the chromedriver.  If you let this run on chrome the error catch
+					//will print out the entire error message.  Perhaps someone in the future can figure out why this fails on
+					//chrome.
+					System.out.println(handles.get(i));
 					driver.switchTo().window(handles.get(i));
 		
 					Thread.sleep(3000);
@@ -82,6 +92,8 @@ public class GARLSimpleLoadTest extends WebDriverTestBase {
 					click("link=Next");
 				}
 				
+				driver.switchTo().window(oldTab); 
+				
 				Thread.sleep(5000);
 				
 				click("link=Logout"); 
@@ -92,10 +104,18 @@ public class GARLSimpleLoadTest extends WebDriverTestBase {
 			
 			} catch (Exception e) {
 				
+				System.out.println(e.getMessage());
 				continue;
+				
+			} finally {
+		
+				driver.quit();
+				
+				if (browserName.equalsIgnoreCase("chrome")) {
+					
+					break;
+				}
 			}
-			
-			driver.quit();
 		}
 	}
 	

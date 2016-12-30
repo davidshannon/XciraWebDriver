@@ -17,6 +17,7 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
@@ -254,11 +255,17 @@ public class WebDriverTestBase extends TestBase {
 	    baseUrl = getProperty(URL);
 	}
 	
-	protected void setupWebDriver(String browserName, String binaryPath, String url, String geckoDriverPath, String implicitlyWait) {
+	protected void setupWebDriver(String browserName, String binaryPath, String url, String driverPath, String implicitlyWait) {
 		
 		if(browserName.equalsIgnoreCase("ie")) {
 			
+			System.setProperty("webdriver.ie.driver", driverPath);
 			driver = new InternetExplorerDriver(); 
+			
+		} else if(browserName.equalsIgnoreCase("edge")) {
+			
+			System.setProperty("webdriver.edge.driver", driverPath);
+			driver = new EdgeDriver();
 			
 		} else if(browserName.equalsIgnoreCase("chrome")) {
 			
@@ -267,7 +274,7 @@ public class WebDriverTestBase extends TestBase {
 				System.setProperty("webdriver.chrome.driver", binaryPath);
 			}
 			
-			System.setProperty("webdriver.chrome.driver", geckoDriverPath);
+			System.setProperty("webdriver.chrome.driver", driverPath);
 			driver = new ChromeDriver();
 			
 		} else if (browserName.equalsIgnoreCase("safari")) {
@@ -276,14 +283,14 @@ public class WebDriverTestBase extends TestBase {
 			
 		} else {
 			
-			if(geckoDriverPath != null) {
+			if(driverPath != null) {
 				
 				ProfilesIni profilesIni = new ProfilesIni();	
 				FirefoxProfile fp = profilesIni.getProfile("selenium");
 				DesiredCapabilities desiredCapability = DesiredCapabilities.firefox();
 			    
-				System.out.println("geckopath set to (" + geckoDriverPath + ")");
-				System.setProperty("webdriver.gecko.driver", geckoDriverPath);
+				System.out.println("geckopath set to (" + driverPath + ")");
+				System.setProperty("webdriver.gecko.driver", driverPath);
 			    
 			    desiredCapability.setCapability(FirefoxDriver.PROFILE, fp);
 				
