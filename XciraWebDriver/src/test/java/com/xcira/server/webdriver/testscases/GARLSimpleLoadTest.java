@@ -109,11 +109,9 @@ public class GARLSimpleLoadTest extends WebDriverTestBase {
 				
 			} finally {
 		
-				driver.quit();
+				if(driver != null) {
 				
-				if (browserName.equalsIgnoreCase("chrome")) {
-					
-					break;
+					driver.quit();
 				}
 			}
 		}
